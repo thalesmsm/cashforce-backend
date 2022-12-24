@@ -4,11 +4,10 @@ module.exports = (sequelize, DataTypes) => {
     {
       id: {
         type: DataTypes.INTEGER(11),
-        allowNull: false,
         primaryKey: true,
         autoIncrement: true
       },
-      name: DataTypes.STRING(255),
+      name: {type: DataTypes.STRING(255), allowNull: false},
       tradingName: { type: DataTypes.STRING(255), defaultValue: null},
       cashforceTax: { type: DataTypes.STRING(255), defaultValue: null},
       responsibleName: { type: DataTypes.STRING(255), defaultValue: null},
@@ -27,17 +26,32 @@ module.exports = (sequelize, DataTypes) => {
       phoneNumber: { type: DataTypes.STRING(255), defaultValue: null},
       situation: { type: DataTypes.STRING(255), defaultValue: null},
       situationDate: { type: DataTypes.STRING(255), defaultValue: null},
-      createdAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW, allowNull: false, },
-      updatedAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW, allowNull: false, },
-      cnpjId: { type: DataTypes.INTEGER(11), defaultValue: null},
-      confirm: {type: DataTypes.BOOLEAN, defaultValue: 1 },
+      createdAt: { type: DataTypes.DATE, allowNull: false, },
+      updatedAt: { type: DataTypes.DATE, allowNull: false, },
+      cnpjId: {
+        type: DataTypes.INTEGER(11),
+        defaultValue: null,
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+        references: {
+          model: 'cnpjs',
+          key: 'id',
+        },
+      },
+      confirm: {type: DataTypes.BOOLEAN, defaultValue: true },
       email: { type: DataTypes.STRING(255), defaultValue: null}
     },
     {
-      timestamps: false,
+      timestamps: true,
       tableName: "buyers",
+      initialAutoIncrement: 152
     }
   );
+
+  buyers.associate = (models) => {
+    buyers.belongsTo(models.cnpjs, { foreignKey: 'cnpjId', as: 'cnpj' });
+    buyers.hasMany(models.orders, { foreignKey: 'buyerId' });
+  };
 
   return buyers;
 };
