@@ -1,13 +1,12 @@
 const express = require('express');
 const cors = require('cors');
-const buyersController = require('../controllers/buyers.controller');
+const OrdersController = require('../controllers/orders.controller');
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
-// app.use(express.static('public'));
 
-app.get('/buyers', buyersController.getBuyers);
+app.get('/orders', OrdersController.getOrders);
 
 module.exports = app;
