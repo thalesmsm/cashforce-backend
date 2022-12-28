@@ -1,12 +1,12 @@
 const express = require('express');
 const cors = require('cors');
-const OrdersController = require('../controllers/orders.controller');
+const ordersRouter = require('../routers/orders.router');
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-app.get('/orders', OrdersController.getOrders);
+app.use(ordersRouter);
 
 module.exports = app;
